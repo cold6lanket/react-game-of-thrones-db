@@ -29,7 +29,7 @@ export default class RandomChar extends Component {
     onError = (err) => {
         this.setState({ 
             error: true,
-            loading: true
+            loading: false
         });
     }
 
@@ -49,12 +49,15 @@ export default class RandomChar extends Component {
         const spinner = loading ? <Spinner/> : null;
         const content = !(loading || error) ? <View char={char} /> : null;
 
+
         return (
-            <div className="random-block rounded">
-                {errorMessage}
-                {spinner}
-                {content}
-            </div>
+            <>
+                <div className="random-block rounded">
+                    {errorMessage}
+                    {spinner}
+                    {content}
+                </div>
+            </>
         );
     }
 }
