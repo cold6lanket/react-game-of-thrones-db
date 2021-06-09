@@ -3,6 +3,11 @@ class GotService {
         this._API = 'https://anapioficeandfire.com/api';
     }
 
+    _extractId = (item) => {
+        const idRegExp = /\/([0-9]*)$/;
+        return item.url.match(idRegExp)[1];
+    }
+
     async getResource(url) {
         const res = await fetch(`${this._API}${url}`);
 
@@ -22,6 +27,8 @@ class GotService {
     async getSpecificCharacter(id) {
         const character = await this.getResource(`/characters/${id}`);
 
+        character.id = id;
+
         for (const [key, value] of Object.entries(character)) {
             if (value.length === 0) {
                 character[key] = 'unknown';
@@ -30,6 +37,8 @@ class GotService {
 
         return this._transformCharacter(character);
     }
+
+    
 
     getHouses() {
         return this.getResource('/houses?page=5&pageSize=10');
@@ -47,33 +56,36 @@ class GotService {
         return this.getResource(`/books/${id}`);
     }
 
-    _transformCharacter(char) {
+    _transformCharacter = (char) => {
         return {
             name: char.name,
             gender: char.gender,
             born: char.born,
             died: char.died,
-            culture: char.culture
+            culture: char.culture,
+            id: this._extractId(char)
         };
     }
 
-    _transformHouse(house) {
+    _transformHouse = (house) => {
         return {
             name: house.name,
             region: house.region,
             words: house.words,
             titles: house.titles,
             overlord: house.overlord,
-            ancestralWeapons: house.ancestralWeapons
+            ancestralWeapons: house.ancestralWeapons,
+            id: this._extractId(house)
         };
     }
 
-    _transformBook(book) {
+    _transformBook = (book) => {
         return {
             name: book.name,
             numberOfPages: book.numberOfPages,
             publisher: book.publisher,
-            released: book.released
+            released: book.released,
+            id: this._extractId(book)
         };
     }
         

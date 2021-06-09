@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import './itemList.css';
 import GotService from '../../services/getService';
+import ErrorMessage from '../errorMessage';
 import Spinner from '../spinner';
 
 export default class ItemList extends Component {
@@ -8,23 +9,42 @@ export default class ItemList extends Component {
     gotService = new GotService();
 
     state = {
-        charList: null
+        charList: null,
+        error: false
     };
+
+    componentDidCatch() {
+        this.setState({
+            error: true,
+            charList: null
+        });
+    }
 
     componentDidMount() {
         this.gotService
             .getAllCharacters()
             .then(charList => {
-                this.setState({ charList });
-            });
+                this.setState({ 
+                    charList,
+                    error: false 
+                });
+            })
+            .catch(() => this.onError());
+    }
+
+    onError() {
+        this.setState({ 
+            error: true,
+            charList: null
+        })
     }
 
     showCharacters(arr) {
-        return arr.map((item, i) => {
+        return arr.map((item) => {
             return (
                 <li 
-                    onClick={() => this.props.onCharacterSelected(41 + i)}
-                    key={item.name + i}
+                    onClick={() => this.props.onCharacterSelected(item.id)}
+                    key={item.id}
                     className="list-group-item"
                 >
                     {item.name}
@@ -34,7 +54,9 @@ export default class ItemList extends Component {
     }
 
     render() {
-        const { charList } = this.state;
+        const { charList, error } = this.state;
+
+        if (error) return <ErrorMessage/>;
 
         if (!charList) return <Spinner/>;
 
