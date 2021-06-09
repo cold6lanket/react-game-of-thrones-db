@@ -7,12 +7,13 @@ import Spinner from '../spinner';
 export default class ItemList extends Component {
 
     gotService = new GotService();
-
+    
     state = {
         charList: null,
         error: false
     };
 
+    // when there is error
     componentDidCatch() {
         this.setState({
             error: true,
@@ -20,6 +21,7 @@ export default class ItemList extends Component {
         });
     }
 
+    // when component is rendered
     componentDidMount() {
         this.gotService
             .getAllCharacters()
@@ -32,6 +34,7 @@ export default class ItemList extends Component {
             .catch(() => this.onError());
     }
 
+    // function in case of error from server
     onError() {
         this.setState({ 
             error: true,

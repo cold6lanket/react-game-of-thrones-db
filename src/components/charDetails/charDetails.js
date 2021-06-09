@@ -56,12 +56,13 @@ export default class CharDetails extends Component {
 
     render() {
         const errMessage = <span className="select-error">Please select character</span>;
+        const {error, character, loading} = this.state;
 
-        if (this.state.error) return <ErrorMessage/>;
+        if (error) return <ErrorMessage/>;
 
-        if (!this.state.character) return errMessage;
+        if (!character) return errMessage;
 
-        if (this.state.loading) {
+        if (loading) {
             return (
                 <div className="char-details rounded">
                     <Spinner/>
