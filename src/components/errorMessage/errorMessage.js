@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ErrorMessage = () => {
-    return <span>Something went wrong</span>
+    return <span className="select-error">Something went wrong</span>
 };
 
 export default ErrorMessage;

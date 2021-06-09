@@ -6,10 +6,6 @@ import Spinner from '../spinner';
 import './randomChar.css';
 
 export default class RandomChar extends Component {
-    constructor() {
-        super();
-        this.updateCharacter();
-    }
     
     state = {
         char: {},
@@ -19,6 +15,15 @@ export default class RandomChar extends Component {
 
     gotService = new GotService();
 
+    componentDidMount() {
+        this.updateCharacter();
+        this.timerId = setInterval(this.updateCharacter, 1500);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerId);
+    }
+
     onCharacterLoaded = (char) => {
         this.setState({ 
             char,
@@ -26,14 +31,14 @@ export default class RandomChar extends Component {
         });
     }
 
-    onError = (err) => {
+    onError = () => {
         this.setState({ 
             error: true,
             loading: false
         });
     }
 
-    updateCharacter() {
+    updateCharacter = () => {
         const id = Math.floor(Math.random() * 140 + 25);
 
         this.gotService
