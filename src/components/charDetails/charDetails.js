@@ -33,7 +33,7 @@ export default class CharDetails extends Component {
     }
 
     updateChar() {
-        const {charId} = this.props;
+        const { charId } = this.props;
 
         if (!charId) return;
 
@@ -56,7 +56,7 @@ export default class CharDetails extends Component {
 
     render() {
         const errMessage = <span className="select-error">Please select character</span>;
-        const {error, character, loading} = this.state;
+        const { error, character, loading } = this.state;
 
         if (error) return <ErrorMessage/>;
 
@@ -70,7 +70,7 @@ export default class CharDetails extends Component {
             );
         }
 
-        const {name, born, died, culture, gender} = this.state.character;
+        const { name, born, died, culture, gender } = this.state.character;
 
         return (
             <div className="char-details rounded">

@@ -8,7 +8,7 @@ class GotService {
         return item.url.match(idRegExp)[1];
     }
 
-    async getResource(url) {
+    getResource = async (url) => {
         const res = await fetch(`${this._API}${url}`);
 
         if (!res.ok) {
@@ -18,13 +18,13 @@ class GotService {
         return await res.json();
     }
 
-    async getAllCharacters() {
+    getAllCharacters = async () => {
         const res = await this.getResource('/characters?page=5&pageSize=10');
 
         return res.map(this._transformCharacter)
     }
 
-    async getSpecificCharacter(id) {
+    getSpecificCharacter  = async (id) => {
         const character = await this.getResource(`/characters/${id}`);
 
         character.id = id;
@@ -40,20 +40,24 @@ class GotService {
 
     
 
-    getHouses() {
-        return this.getResource('/houses?page=5&pageSize=10');
+    getHouses = async () => {
+        const houses = await this.getResource('/houses?page=5&pageSize=10');
+        return houses.map(house => this._transformHouse(house));
     }
 
-    getSpecificHouse(id) {
-        return this.getResource(`/houses/${id}`);
+    getSpecificHouse = async (id) => {
+        const house = await this.getResource(`/houses/${id}`);
+        return this._transformHouse(house);
     }
 
-    getBooks() {
-        return this.getResource('/books?page=5&pageSize=10');
+    getBooks = async () => {
+        const books = await this.getResource('/books');
+        return books.map(book => this._transformBook(book));
     }
 
-    getSpecificBook(id) {
-        return this.getResource(`/books/${id}`);
+    getSpecificBook = async (id) => {
+        const book = await this.getResource(`/books/${id}`);
+        return this._transformBook(book);
     }
 
     _transformCharacter = (char) => {

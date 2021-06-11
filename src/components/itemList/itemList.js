@@ -1,15 +1,12 @@
 import React, {Component} from 'react';
 import './itemList.css';
-import GotService from '../../services/getService';
 import ErrorMessage from '../errorMessage';
 import Spinner from '../spinner';
 
 export default class ItemList extends Component {
-
-    gotService = new GotService();
     
     state = {
-        charList: null,
+        itemList: null,
         error: false
     };
 
@@ -17,17 +14,18 @@ export default class ItemList extends Component {
     componentDidCatch() {
         this.setState({
             error: true,
-            charList: null
+            itemList: null
         });
     }
 
     // when component is rendered
     componentDidMount() {
-        this.gotService
-            .getAllCharacters()
-            .then(charList => {
+        const { getData } = this.props;
+
+        getData()
+            .then(itemList => {
                 this.setState({ 
-                    charList,
+                    itemList,
                     error: false 
                 });
             })
@@ -38,32 +36,35 @@ export default class ItemList extends Component {
     onError() {
         this.setState({ 
             error: true,
-            charList: null
+            itemList: null
         })
     }
 
     showCharacters(arr) {
         return arr.map((item) => {
+            const { id } = item;
+            const label = this.props.renderItem(item);
+
             return (
                 <li 
-                    onClick={() => this.props.onCharacterSelected(item.id)}
-                    key={item.id}
+                    onClick={() => this.props.onCharacterSelected(id)}
+                    key={id}
                     className="list-group-item"
                 >
-                    {item.name}
+                    {label}
                 </li>
             );
         });
     }
 
     render() {
-        const { charList, error } = this.state;
+        const { itemList, error } = this.state;
 
         if (error) return <ErrorMessage/>;
 
-        if (!charList) return <Spinner/>;
+        if (!itemList) return <Spinner/>;
 
-        const characters = this.showCharacters(charList);
+        const characters = this.showCharacters(itemList);
 
         return (
             <ul className="item-list list-group">
