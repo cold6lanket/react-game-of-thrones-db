@@ -1,97 +1,70 @@
 import React, {Component} from 'react';
-import GotService from '../../services/getService.js';
+//import GotService from '../../services/getService.js';
 import Spinner from '../spinner';
-import ErrorMessage from '../errorMessage';
+// import ErrorMessage from '../errorMessage';
 
 import './charDetails.css';
 
 
 export default class CharDetails extends Component {
-
-    gotService = new GotService();
+    // _isMounted = false;
 
     state = {
         character: null,
-        loading: true,
-        error: false
-    };
-
-    componentDidCatch() {
-        this.setState({
-            error: true
-        });
+        loading: true
     }
 
     componentDidMount() {
+        //this._isMounted = true;
         this.updateChar();
     }
 
+    // componentWillUnmount() {
+    //     this._isMounted = false;
+    // }
+
     componentDidUpdate(prevProps) {
-        if (this.props.charId !== prevProps) {
+        if (this.props.charId !== prevProps.charId) {
             this.updateChar();
         }
     }
 
     updateChar() {
-        const { charId } = this.props;
+        const { charId, getData } = this.props;
 
         if (!charId) return;
 
-        this.gotService
-            .getSpecificCharacter(charId)
+        getData(charId)
             .then(character => {
-                this.setState({ 
+                this.setState({
                     character,
-                    loading: false 
+                    loading: false
                 });
-            })
-            .catch(() => {
-                this.setState({ 
-                    character: null,
-                    error: true 
-                });
+                // if (this._isMounted) {
+                //     this.setState({character});
+                // }
             });
     }
 
 
     render() {
         const errMessage = <span className="select-error">Please select character</span>;
-        const { error, character, loading } = this.state;
-
-        if (error) return <ErrorMessage/>;
+        const { character, loading } = this.state;
 
         if (!character) return errMessage;
+        if (loading) return <Spinner/>;
 
-        if (loading) {
-            return (
-                <div className="char-details rounded">
-                    <Spinner/>
-                </div>
-            );
-        }
-
-        const { name, born, died, culture, gender } = this.state.character;
+        const { name } = character;
 
         return (
             <div className="char-details rounded">
                 <h4>{name}</h4>
                 <ul className="list-group list-group-flush">
-                    <li className="list-group-item d-flex justify-content-between">
-                        <span className="term">Gender</span>
-                        <span>{gender}</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between">
-                        <span className="term">Born</span>
-                        <span>{born}</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between">
-                        <span className="term">Died</span>
-                        <span>{died}</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between">
-                        <span className="term">Culture</span>
-                        <span>{culture}</span>
-                    </li>
+                    {
+                        React.Children.map(this.props.children, (child) => {
+                            return React.cloneElement(child, { character });
+                        })
+                    }
                 </ul>
             </div>
         );

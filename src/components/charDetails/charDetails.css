@@ -2,6 +2,7 @@
     background-color: #fff;
     padding: 25px 25px 15px 25px;
     margin-bottom: 40px;
+    transition: all 1s ease 0s;
 }
 
 .char-details h4 {

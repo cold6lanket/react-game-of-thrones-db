@@ -8,6 +8,13 @@ class GotService {
         return item.url.match(idRegExp)[1];
     }
 
+    isSet(data) {
+        if (data) {
+            return data
+        } 
+        return 'unknown'
+    }
+
     getResource = async (url) => {
         const res = await fetch(`${this._API}${url}`);
 
@@ -27,14 +34,6 @@ class GotService {
     getSpecificCharacter  = async (id) => {
         const character = await this.getResource(`/characters/${id}`);
 
-        character.id = id;
-
-        for (const [key, value] of Object.entries(character)) {
-            if (value.length === 0) {
-                character[key] = 'unknown';
-            }
-        }
-
         return this._transformCharacter(character);
     }
 
@@ -47,6 +46,7 @@ class GotService {
 
     getSpecificHouse = async (id) => {
         const house = await this.getResource(`/houses/${id}`);
+
         return this._transformHouse(house);
     }
 
@@ -62,33 +62,33 @@ class GotService {
 
     _transformCharacter = (char) => {
         return {
-            name: char.name,
-            gender: char.gender,
-            born: char.born,
-            died: char.died,
-            culture: char.culture,
+            name: this.isSet(char.name),
+            gender: this.isSet(char.gender),
+            born: this.isSet(char.born),
+            died: this.isSet(char.died),
+            culture: this.isSet(char.culture),
             id: this._extractId(char)
         };
     }
 
     _transformHouse = (house) => {
         return {
-            name: house.name,
-            region: house.region,
-            words: house.words,
-            titles: house.titles,
-            overlord: house.overlord,
-            ancestralWeapons: house.ancestralWeapons,
+            name: this.isSet(house.name),
+            region: this.isSet(house.region),
+            words: this.isSet(house.words),
+            titles: this.isSet(house.titles),
+            overlord: this.isSet(house.overlord),
+            ancestralWeapons: this.isSet(house.ancestralWeapons),
             id: this._extractId(house)
         };
     }
 
     _transformBook = (book) => {
         return {
-            name: book.name,
-            numberOfPages: book.numberOfPages,
-            publisher: book.publisher,
-            released: book.released,
+            name: this.isSet(book.name),
+            numberOfPages: this.isSet(book.numberOfPages),
+            publisher: this.isSet(book.publisher),
+            released: this.isSet(book.released),
             id: this._extractId(book)
         };
     }
