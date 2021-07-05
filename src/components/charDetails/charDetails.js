@@ -1,72 +1,53 @@
-import React, {Component} from 'react';
+import React, { useState, useEffect } from 'react';
 //import GotService from '../../services/getService.js';
-import Spinner from '../spinner';
+//import Spinner from '../spinner';
 // import ErrorMessage from '../errorMessage';
-
 import './charDetails.css';
 
 
-export default class CharDetails extends Component {
-    // _isMounted = false;
+export default function CharDetails({ charId, getData, itemName, children }) {
+    const [character, setCharacter] = useState(null);
 
-    state = {
-        character: null,
-        loading: true
-    }
+    useEffect(() => {
+        updateChar();
 
-    componentDidMount() {
-        //this._isMounted = true;
-        this.updateChar();
-    }
+    }, [charId]);
+ 
 
-    // componentWillUnmount() {
-    //     this._isMounted = false;
-    // }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.charId !== prevProps.charId) {
-            this.updateChar();
-        }
-    }
-
-    updateChar() {
-        const { charId, getData } = this.props;
-
+    function updateChar() {
         if (!charId) return;
 
         getData(charId)
-            .then(character => {
-                this.setState({
-                    character,
-                    loading: false
-                });
-                // if (this._isMounted) {
-                //     this.setState({character});
-                // }
-            });
+            .then(character => setCharacter(character));
     }
 
 
-    render() {
-        const errMessage = <span className="select-error">Please select character</span>;
-        const { character, loading } = this.state;
 
-        if (!character) return errMessage;
-        if (loading) return <Spinner/>;
+    const errMessage = <span className="select-error">Please select {itemName}</span>;
+    
 
-        const { name } = character;
-
+    if (!character) {
         return (
-            <div className="char-details rounded">
-                <h4>{name}</h4>
-                <ul className="list-group list-group-flush">
-                    {
-                        React.Children.map(this.props.children, (child) => {
-                            return React.cloneElement(child, { character });
-                        })
-                    }
-                </ul>
+            <div className="char-details rounded error">
+                {errMessage}
             </div>
         );
     }
+
+    const { name } = character;
+
+
+    return (
+        <div className="char-details rounded">
+            <h4>{name}</h4>
+            <ul className="list-group list-group-flush">
+                {
+                    React.Children.map(children, (child) => {
+                        return React.cloneElement(child, { character });
+                    })
+                }
+            </ul>
+        </div>
+    );
+
 }

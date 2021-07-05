@@ -43,6 +43,7 @@ export default class CharacterPage extends Component {
             <CharDetails
                 getData={this.gotService.getSpecificCharacter} 
                 charId={this.state.selectedChar}
+                itemName={'character'}
             >
                 <Field field="gender" label="Gender" />
                 <Field field="born" label="Born" />
@@ -51,7 +52,7 @@ export default class CharacterPage extends Component {
             </CharDetails>
         );
 
-        return(
+        return (
             <RowBlock 
                 left={itemList}
                 right={charDetails}

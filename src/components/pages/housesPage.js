@@ -43,6 +43,7 @@ export default class HousesPage extends Component {
             <CharDetails
                 getData={this.gotService.getSpecificHouse} 
                 charId={this.state.selectedChar}
+                itemName={'house'}
             >
                 <Field field='region' label='Region'/>
                 <Field field='words' label='Words'/>

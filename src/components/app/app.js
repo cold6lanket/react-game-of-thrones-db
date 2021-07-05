@@ -4,8 +4,8 @@ import Header from '../header';
 import RandomChar from '../randomChar';
 import ErrorMessage from '../errorMessage';
 import GotService from '../../services/getService.js';
-import {CharacterPage, BooksPage, HousesPage, BooksItem, HomePage} from '../pages';
-import {BrowserRouter as Router, Route} from 'react-router-dom';
+import {CharacterPage, BooksPage, HousesPage, BooksItem, HomePage, NotFoundPage} from '../pages';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './app.css';
 
 class App extends Component {
@@ -13,7 +13,7 @@ class App extends Component {
 
     state = {
         hide: false,
-        error: false
+        error: false,
     };
 
     componentDidCatch() {
@@ -31,13 +31,14 @@ class App extends Component {
     }
 
     render() {
-        let elem = <RandomChar />;
+        // let elem = <RandomChar />;
 
         if (this.state.error) return <ErrorMessage/>;
 
-        if (this.state.hide) {
-            elem = null;
-        }
+        // if (this.state.hide) {
+        //     elem = null;
+        // }
+
 
         return (
             <Router>
@@ -49,7 +50,7 @@ class App extends Component {
                         <Container>
                             <Row>
                                 <Col lg={{size: 5, offset: 0}}>
-                                    {elem}
+                                    {(!this.state.hide) ? <RandomChar /> : null}
                                     <button
                                         onClick={() => this.onToggleHide()} 
                                         className='btn btn-secondary'
@@ -57,19 +58,22 @@ class App extends Component {
                                 </Col>
                             </Row>
 
-                            <Route path="/" component={HomePage} exact />
-                            <Route path="/characters" component={CharacterPage} />
-                            <Route path="/houses" component={HousesPage} />
-                            <Route path="/books" component={BooksPage} exact />
-                            <Route path="/books/:id" 
-                                    render={
-                                        ({match}) => {
-                                            const { id } = match.params;
+                            <Switch>
+                                <Route path="/" component={HomePage} exact />
+                                <Route path="/characters" component={CharacterPage} />
+                                <Route path="/houses" component={HousesPage} />
+                                <Route path="/books" component={BooksPage} exact />
+                                <Route path="/books/:id" 
+                                        render={
+                                            ({match}) => {
+                                                const { id } = match.params;
 
-                                            return <BooksItem bookId={id} />
-                                        }   
-                                    } 
-                            />
+                                                return <BooksItem bookId={id} />
+                                            }   
+                                        } 
+                                />
+                                <Route exact path="*" component={NotFoundPage} />
+                            </Switch>
                         </Container>
                     </Container>
                 </div>
